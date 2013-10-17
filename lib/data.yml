@@ -1,0 +1,44 @@
+stations:
+  - A
+  - B
+  - C
+  - D
+  - E
+
+adjacency_matrix:
+  -
+    from: A
+    to: B
+    distance: 5
+  -
+    from: B
+    to: C
+    distance: 4
+  -
+    from: C
+    to: D
+    distance: 8
+  -
+    from: D
+    to: C
+    distance: 8
+  -
+    from: D
+    to: E
+    distance: 6
+  -
+    from: A
+    to: D
+    distance: 5
+  -
+    from: C
+    to: E
+    distance: 2
+  -
+    from: E
+    to: B
+    distance: 3
+  -
+    from: A
+    to: E
+    distance: 7
