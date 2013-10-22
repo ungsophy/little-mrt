@@ -58,6 +58,8 @@ describe 'Solutions' do
     it 'returns only paths that have exactly 4 stops' do
       paths          = graph.search('A-C')
       filtered_paths = paths.stop(4)
+
+      filtered_paths.size.must_equal 3
     end
   end
 
