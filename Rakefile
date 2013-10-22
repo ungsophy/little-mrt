@@ -1,5 +1,9 @@
-task default: [:test]
+require 'rake/testtask'
 
-task :test do
-  Dir.glob('./test/**/*_test.rb') { |file| require file }
+Rake::TestTask.new do |t|
+  require 'bundler'
+  Bundler.require
+  t.pattern = "./test/**/*_test.rb"
 end
+
+task default: :test

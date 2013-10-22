@@ -2,58 +2,95 @@ module LittleMRT
   class Graph
 
     DELIMITER = '-'
-    DATA_PATH = "#{::LittleMRT.root}/data.yml"
 
-    attr_reader :stations, :matrix
+    attr_reader :matrix
 
     def initialize(data_path = nil)
-      load_data(data_path)
+      data_loader = DataLoader.new
+      @matrix     = data_loader.load_matrix
     end
 
     def search(query)
-      # stations = to_stations(query)
+      stations = to_stations(query)
+
+      paths = direct_path(stations)
+      paths = search_path(stations.first, stations.last) if paths.empty? && stations.size == 2
+
+      paths
     end
 
     private
-      def load_data(path)
-        data = load_data_from_yaml(path)
-        prepare_stations(data['stations'])
-        prepare_matrix(data['adjacency_matrix'])
+      def search_path(from, to)
+        str_paths = query_path(from, to, from.label)
+        str_paths = clean_string_paths(str_paths)
+        to_paths(str_paths)
       end
 
-      def prepare_matrix(adjacency_matrix)
-        @matrix = AdjacencyMatrix.new(stations)
+      def to_paths(str_paths)
+        paths = str_paths.split(';').map do |str_path|
+                  adjs = matrix.parse(str_path)
+                  Path.new(adjs)
+                end
+        Paths.new(*paths)
+      end
 
-        stations.each do |from|
-          stations.each do |to|
-            if adjacency = find_adjacency(adjacency_matrix, from, to)
-              matrix.add_adjacency(from, adjacency)
-            end
-          end
+      def clean_string_paths(str_paths)
+        str_paths.gsub(/;[a-zA-Z]$/, '')
+      end
+
+      def query_path(from, to, str)
+        adjs = matrix.adjacencies_of(from)
+        adjs.each_with_index do |adj, index|
+          str = if adj.to != to
+                  not_yet_reach_destination(adj, to, str)
+                else
+                  path_reach_destination(to, str)
+                end
         end
+
+        str
       end
 
-      def find_adjacency(adjacency_matrix, from, to)
-        adjacency_matrix.each do |obj|
-          if obj['from'] == from.label && obj['to'] == to.label
-            return Adjacency.new(from, to, obj['distance'])
-          end
+      def not_yet_reach_destination(adj, to, str)
+        if deadlock?(str, adj.to.label)
+          str += '0'
+        else
+          str += "#{adj.to}"
+          str = query_path(adj.to, to, str)
         end
 
-        nil
+        str.slice(0, str.length - 1)
       end
 
-      def prepare_stations(stations)
-        @stations = stations.map { |label| Station.new(label) }
+      def path_reach_destination(to, str)
+        str = "#{str}#{to.label};"
+        tmp = str.split(';')[-1]
+        str + tmp.slice(0, tmp.length - 1)
       end
 
-      def load_data_from_yaml(path)
-        path ||= DATA_PATH
-        YAML.load(File.open(path))
+      def deadlock?(path, to)
+        path[-2] == to
+      end
+
+      def direct_path(stations)
+        path  = Path.new
+        paths = Paths.new
+        n     = stations.size - 1
+
+        stations.each_index do |i|
+          if n == i
+            paths << path
+            return paths
+          end
+
+          path << matrix.adjacency!(stations[i], stations[i + 1])
+        end
+      rescue AdjacencyNotFound
+        paths
       end
 
       def to_stations(query)
-        query.split(DELIMITER)
+        query.split(DELIMITER).map { |label| Station.new(label) }
       end
   end
 end
