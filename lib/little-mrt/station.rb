@@ -4,7 +4,7 @@ module LittleMRT
     attr_reader :label
 
     def initialize(label)
-      @label = label
+      @label = label.upcase
     end
 
     def ==(other)

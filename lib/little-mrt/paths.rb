@@ -21,5 +21,9 @@ module LittleMRT
     def min_distance
       @paths.sort { |path1, path2| path1.distance <=> path2.distance }.first
     end
+
+    def max_distance(n)
+      @paths.select { |path| path.distance < n }
+    end
   end
 end

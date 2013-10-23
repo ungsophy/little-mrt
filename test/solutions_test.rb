@@ -56,10 +56,18 @@ describe 'Solutions' do
 
   describe 'Problem 7: A-C with exactly 4 stops' do
     it 'returns only paths that have exactly 4 stops' do
-      paths          = graph.search('A-C')
+      paths          = graph.search('A-C', stop: 4)
       filtered_paths = paths.stop(4)
 
       filtered_paths.size.must_equal 3
+      filtered_paths[0].to_s.must_equal 'A-B-C-D-C'
+      filtered_paths[0].stops_count.must_equal 4
+
+      filtered_paths[1].to_s.must_equal 'A-D-C-D-C'
+      filtered_paths[1].stops_count.must_equal 4
+
+      filtered_paths[2].to_s.must_equal 'A-D-E-B-C'
+      filtered_paths[2].stops_count.must_equal 4
     end
   end
 
@@ -80,6 +88,24 @@ describe 'Solutions' do
 
       path.to_s.must_equal 'B-C-E-B'
       path.distance.must_equal 9
+    end
+  end
+
+  describe 'Problem 10: C-C with distance less than 30' do
+    it 'returns only paths that have distance less than 30' do
+      paths = graph.search('C-C', distance: 30)
+      filtered_paths = paths.max_distance(30)
+
+      filtered_paths.size.must_equal 7
+      filtered_paths.each { |path| path.distance.must_be :<, 30 }
+
+      filtered_paths[0].to_s.must_equal 'C-D-C'
+      filtered_paths[1].to_s.must_equal 'C-D-C-E-B-C'
+      filtered_paths[2].to_s.must_equal 'C-D-E-B-C'
+      filtered_paths[3].to_s.must_equal 'C-E-B-C'
+      filtered_paths[4].to_s.must_equal 'C-E-B-C-D-C'
+      filtered_paths[5].to_s.must_equal 'C-E-B-C-E-B-C'
+      filtered_paths[6].to_s.must_equal 'C-E-B-C-E-B-C-E-B-C'
     end
   end
 end

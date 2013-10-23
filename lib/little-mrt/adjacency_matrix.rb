@@ -20,8 +20,10 @@ module LittleMRT
 
         from = Station.new(str_path[i])
         to   = Station.new(str_path[i + 1])
-        adjacencies << adjacency(from, to)
+        adjacencies << adjacency!(from, to)
       end
+    rescue AdjacencyNotFound
+      []
     end
 
     def add_adjacency(from, adjacency)

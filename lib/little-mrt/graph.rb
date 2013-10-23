@@ -11,35 +11,21 @@ module LittleMRT
       @search_engine = SearchEngine.new(self)
     end
 
-    def search(query)
-      stations = to_stations(query)
+    def search(query, options = {})
+      stations = query.gsub(/\-/, '')
 
       paths = direct_path(stations)
-      paths = search_engine.search(stations.first, stations.last) if paths.empty? && stations.size == 2
+      paths = search_engine.search(stations, options) if paths.empty? && stations.length == 2
 
       paths
     end
 
     private
       def direct_path(stations)
-        path  = Path.new
-        paths = Paths.new
-        n     = stations.size - 1
+        adjs = matrix.parse(stations)
 
-        stations.each_index do |i|
-          if n == i
-            paths << path
-            return paths
-          end
-
-          path << matrix.adjacency!(stations[i], stations[i + 1])
-        end
-      rescue AdjacencyNotFound
-        paths
-      end
-
-      def to_stations(query)
-        query.split(DELIMITER).map { |label| Station.new(label) }
+        return Paths.new if adjs.empty?
+        Paths.new(Path.new(adjs))
       end
   end
 end
