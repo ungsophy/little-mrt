@@ -41,8 +41,8 @@ paths.min_distance             # It returns LittleMRT::Path that has the shortes
 paths = graph.search('C-C')    # It retuns all possible paths from C to C
                                # C-D-C, C-D-E-B-C and C-E-B-C
                                
-paths.max_stop(3)              # It returns a new LittleMRT::Paths object that have paths 
-                               # that have no more than 3 stops.
+paths.max_stop(3)              # It returns a new LittleMRT::Paths object 
+                               # that have paths that have no more than 3 stops.
                                # C-D-C and C-E-B-C
 ```
 
