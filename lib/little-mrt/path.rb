@@ -16,12 +16,8 @@ module LittleMRT
     end
     alias_method :<<, :add_adjacency
 
-    def last_adjacency
-      adjacencies.last
-    end
-
     def distance
-      adjacencies.inject(0) { |result, adjacency| result += adjacency.distance }
+      adjacencies.inject(0) { |result, adjacency| result + adjacency.distance }
     end
 
     def stops_count
@@ -37,5 +33,10 @@ module LittleMRT
         end
       end
     end
+
+    private
+      def last_adjacency
+        adjacencies.last
+      end
   end
 end
