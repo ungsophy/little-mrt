@@ -19,6 +19,33 @@ Add this to your Gemfile
 gem 'little-mrt', git: 'git@github.com:ungsophy/little-mrt.git'
 ```
 
+A simple example:
+
+```ruby
+require 'little-mrt'
+
+graph = LittleMRT::Graph.new
+paths = graph.search('A-B-C')  
+paths.first.distance           # 9 
+paths.first.to_s               # 'A-B-C'
+```
+It looks like ```LittleMRT::Graph#search``` returns an array of paths. Yes you're right, but it's more than just a regular array. It returns ```LittleMRT::Paths``` object that wrapped array of paths and added a couple more useful filter methods into it. You will see it next.
+
+```ruby
+paths = graph.search('A-C')    # It retuns all possible paths from A to C
+                               # A-B-C, A-D-C, A-D-E-B-C and A-E-B-C
+
+paths.min_distance             # It returns LittleMRT::Path that has the shortest distance 
+                               # which is A-B-C
+                               
+paths = graph.search('C-C')    # It retuns all possible paths from C to C
+                               # C-D-C, C-D-E-B-C and C-E-B-C
+                               
+paths.max_stop(3)              # It returns a new LittleMRT::Paths object that have paths 
+                               # that have no more than 3 stops.
+                               # C-D-C and C-E-B-C
+```
+
 ## How to run tests
 
 This program requires Ruby 1.9+
