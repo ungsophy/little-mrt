@@ -11,6 +11,12 @@ module LittleMRT
       @matrix   = Hash[stations.map { |station| [station, []] }]
     end
 
+    def add_adjacency(from, adjacency)
+      if adjs = adjacencies_of(from)
+        adjs << adjacency
+      end
+    end
+
     def parse(str_path)
       adjacencies = []
       n           = str_path.length - 1
@@ -24,10 +30,6 @@ module LittleMRT
       end
     rescue AdjacencyNotFound
       []
-    end
-
-    def add_adjacency(from, adjacency)
-      matrix[from] << adjacency
     end
 
     def adjacencies_of(from)
