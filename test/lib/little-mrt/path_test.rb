@@ -7,7 +7,7 @@ describe LittleMRT::Path do
   let(:station_d) { LittleMRT::Station.new('D') }
   let(:adjacency_ab) { LittleMRT::Adjacency.new(station_a, station_b, 10) }
   let(:adjacency_bc) { LittleMRT::Adjacency.new(station_b, station_c, 5) }
-  let(:adjacency_dc) { LittleMRT::Adjacency.new(station_c, station_d, 8) }
+  let(:adjacency_cd) { LittleMRT::Adjacency.new(station_c, station_d, 8) }
   let(:path) { LittleMRT::Path.new }
   let(:another_path) do
     path = LittleMRT::Path.new
@@ -25,7 +25,7 @@ describe LittleMRT::Path do
       it 'raises ArgumentError' do
         path.add_adjacency(adjacency_ab)
 
-        -> { path.add_adjacency(adjacency_dc) }.must_raise(ArgumentError)
+        -> { path.add_adjacency(adjacency_cd) }.must_raise(ArgumentError)
       end
     end
   end
